@@ -62,6 +62,17 @@ fun main() {
         return Day12Pos(-1, -1)
     }
 
+    fun findStartPositions(input: List<String>) =
+        input.flatMapIndexed { y: Int, row: String ->
+            row.mapIndexedNotNull { x, c ->
+                if (c in "Sa") {
+                    Day12Pos(x, y)
+                } else {
+                    null
+                }
+            }
+        }
+
     fun loadMap(input: List<String>) =
         input.map { row ->
             row.map { height ->
@@ -75,14 +86,20 @@ fun main() {
         return hillMap.findPath(startPos)
     }
 
-    fun part2(input: List<String>): Int {
-        return 0
+    fun part2(input: List<String>): Int? {
+        val hillMap = loadMap(input)
+        return findStartPositions(input)
+            .mapNotNull {startPos ->
+                hillMap.findPath(startPos)
+            }
+            .minOrNull()
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day12_test")
     check(findStartPos(testInput) == Day12Pos(0, 0))
     check(part1(testInput) == 31)
+    check(part2(testInput) == 29)
 
     val input = readInput("Day12")
     check(findStartPos(input) == Day12Pos(0, 20))
