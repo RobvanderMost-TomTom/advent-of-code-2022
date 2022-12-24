@@ -17,3 +17,8 @@ enum class Order {
     OutOfOrder,
     Inconclusive
 }
+
+data class Coordinate(
+    val x: Int,
+    val y: Int
+)

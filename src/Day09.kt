@@ -1,20 +1,26 @@
 import kotlin.math.abs
 
-private data class Coordinate(
-    val x: Int,
-    val y: Int
+private data class Day09Instruction(
+    val direction: Char,
+    val amount: Int
 ) {
-    fun moveUp() = Coordinate(x, y+1)
-    fun moveDown() = Coordinate(x, y-1)
-    fun moveLeft() = Coordinate(x-1, y)
-    fun moveRight() = Coordinate(x+1, y)
+    companion object {
+        fun fromString(input: String) =
+            Day09Instruction(input[0], input.substring(2).toInt())
+    }
+}
+fun main() {
+    fun Coordinate.moveUp() = Coordinate(x, y+1)
+    fun Coordinate.moveDown() = Coordinate(x, y-1)
+    fun Coordinate.moveLeft() = Coordinate(x-1, y)
+    fun Coordinate.moveRight() = Coordinate(x+1, y)
 
-    fun isTouching(other: Coordinate): Boolean {
+    fun Coordinate.isTouching(other: Coordinate): Boolean {
         val deltaX = abs(other.x - x)
         val deltaY = abs(other.y - y)
         return (deltaY < 2 && deltaX < 2)
     }
-    fun follow(other: Coordinate) =
+    fun Coordinate.follow(other: Coordinate) =
         if (isTouching(other)) {
             this
         } else {
@@ -34,18 +40,6 @@ private data class Coordinate(
                 }
         }
 
-}
-
-private data class Day09Instruction(
-    val direction: Char,
-    val amount: Int
-) {
-    companion object {
-        fun fromString(input: String) =
-            Day09Instruction(input[0], input.substring(2).toInt())
-    }
-}
-fun main() {
     fun part1(input: List<String>): Int {
         var head = Coordinate(0, 0)
         var tail = Coordinate(0, 0)
