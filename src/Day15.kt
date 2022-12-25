@@ -8,6 +8,7 @@ data class Sensor(
     val closestBeacon: Coordinate,
     val distanceToBeacon: Int = location.manhattanDistanceTo(closestBeacon)
 )
+
 fun main() {
     fun readSensors(input: List<String>): List<Sensor> {
         val re = "Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)".toRegex()
@@ -36,20 +37,42 @@ fun main() {
             .count { coord ->
                 sensors.any { sensor ->
                     coord != sensor.closestBeacon &&
-                    coord.manhattanDistanceTo(sensor.location) <= sensor.distanceToBeacon
+                            coord.manhattanDistanceTo(sensor.location) <= sensor.distanceToBeacon
                 }
             }
     }
 
-    fun part2(input: List<String>): Int {
+    fun part2(input: List<String>, maxCoordinate: Int): Long {
+        val sensors = readSensors(input)
+        check(sensors.size == input.size)
+
+        for (x in 0..maxCoordinate) {
+            var y = 0
+            while (y <= maxCoordinate) {
+                val coord = Coordinate(x, y)
+                val furthestSensor = sensors.filter { sensor ->
+                    coord.manhattanDistanceTo(sensor.location) <= sensor.distanceToBeacon
+                }.maxByOrNull { sensor ->
+                    sensor.distanceToBeacon - abs(sensor.location.x - x)
+                } ?: return 4000000L * x + y
+
+                y = furthestSensor.location.y +
+                        furthestSensor.distanceToBeacon -
+                        abs(furthestSensor.location.x - x) + 1
+
+            }
+        }
         return 0
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day15_test")
     check(part1(testInput, 10) == 26)
+    check(part2(testInput, 20) == 56000011L)
 
     val input = readInput("Day15")
-    println(part1(input, 2000000))
-    println(part2(input))
+    check(part1(input, 2000000) == 4879972)
+    val answer2 = part2(input, 4000000)
+    check(answer2 > 1602012312L)
+    println(answer2)
 }
