@@ -6,7 +6,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("org.json:json:20220924")
+    implementation("org.json:json:20240205")
 }
 
 tasks {
